@@ -1,42 +1,18 @@
 [
     {
-        "id": 1,
-        "title": "Team Sync",
-        "date": "2026-08-30",
-        "time": "10:00 AM",
-        "type": "virtual",
-        "description": "Weekly sync with engineering team via Zoom."
-    },
-    {
-        "id": 2,
-        "title": "Morning Office Setup",
+        "id": 1788128316160,
+        "title": "JDWG Work Plan  Review & Agenda  Setting Meeting  Venue: Brickspoin",
         "date": "2026-08-31",
-        "time": "10:00 AM",
+        "time": "12:00 PM",
         "type": "physical",
-        "description": "Onsite hardware installation - Morning shift."
+        "description": "JDWG Work Plan\n Review & Agenda\n Setting Meeting\n Venue: Brickspoint\n Boutique Aparthotel,\n Asokoro\n Officers\n Assigned: Mrs Asmau\n & Edidiong"
     },
     {
-        "id": 3,
-        "title": "Afternoon Office Setup",
+        "id": 1788128401905,
+        "title": "Mission 300 with  Ministry of Power ",
         "date": "2026-08-31",
-        "time": "02:00 PM",
+        "time": "12:01 PM",
         "type": "physical",
-        "description": "Onsite hardware installation - Afternoon shift."
-    },
-    {
-        "id": 4,
-        "title": "Late Afternoon Review",
-        "date": "2026-08-31",
-        "time": "03:00 PM",
-        "type": "physical",
-        "description": "Final review and wrap-up of hardware installation."
-    },
-    {
-        "id": 1788124960281,
-        "title": "Ibejekwe Joy ",
-        "date": "2026-08-31",
-        "time": "03:00 PM",
-        "type": "virtual",
-        "description": "Meeting with the Director from her Personal PA, JOY"
+        "description": "Mission 300 with\n Ministry of Power\n Time: 12pm"
     }
 ]
