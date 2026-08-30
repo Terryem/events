@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vanilla JS Calendar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <dialog id="adminModal">
+    <div class="admin-content">
+        <h2>Schedule Admin Panel</h2>
+        
+        <!-- Form to Add New Meeting -->
+        <form id="addEventForm">
+            <h3>Add New Meeting</h3>
+            <input type="text" id="adminTitle" placeholder="Meeting Title" required>
+            <input type="date" id="adminDate" required>
+            <input type="text" id="adminTime" placeholder="e.g., 10:00 AM" required>
+            <select id="adminType">
+                <option value="virtual">Virtual</option>
+                <option value="physical">Physical</option>
+                <option value="hybrid">Hybrid</option>
+            </select>
+            <textarea id="adminDesc" placeholder="Description"></textarea>
+            <button type="submit">Save Event</button>
+        </form>
+
+        <h3>Manage Existing Events</h3>
+        <ul id="adminEventList"></ul>
+
+        <div class="admin-actions">
+            <button id="exportJsonBtn">Download Updated JSON</button>
+            <button id="closeAdminBtn">Close Admin</button>
+        </div>
+    </div>
+</dialog>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <button id="toggleAdminBtn">Admin Panel</button>
+            <h2>Controls</h2>
+            <div class="filters">
+                <label>Format:
+                    <select id="formatFilter">
+                        <option value="all">All</option>
+                        <option value="virtual">Virtual</option>
+                        <option value="physical">Physical</option>
+                        <option value="hybrid">Hybrid</option>
+                    </select>
+                </label>
+            </div>
+            
+            <h3>Upcoming Meetings</h3>
+            <ul id="upcomingList"></ul>
+        </aside>
+
+        <main class="calendar-main">
+            <header class="calendar-header">
+                <div class="nav-buttons">
+                    <button id="prevBtn">&lt; Prev</button>
+                    <button id="todayBtn">Today</button>
+                    <button id="nextBtn">Next &gt;</button>
+                </div>
+                <h1 id="monthYearDisplay"></h1>
+                <div class="view-switches">
+                    <button data-view="month" class="view-btn active">Month</button>
+                    <button data-view="week" class="view-btn">Week</button>
+                    <button data-view="day" class="view-btn">Day</button>
+                    <button id="printBtn">Print</button>
+                </div>
+            </header>
+
+            <div id="calendarGrid" class="calendar-grid month-view">
+                </div>
+        </main>
+    </div>
+
+    <dialog id="eventModal">
+        <div class="modal-content">
+            <h3 id="modalTitle"></h3>
+            <p><strong>Time:</strong> <span id="modalTime"></span></p>
+            <p><strong>Type:</strong> <span id="modalType"></span></p>
+            <p id="modalDesc"></p>
+            <button id="closeModal">Close</button>
+        </div>
+    </dialog>
+
+    <script src="script.js"></script>
+</body>
+</html>

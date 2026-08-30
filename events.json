@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "title": "Team Sync",
+        "date": "2026-08-30",
+        "time": "10:00 AM",
+        "type": "virtual",
+        "description": "Weekly sync with engineering team via Zoom."
+    },
+    {
+        "id": 2,
+        "title": "Morning Office Setup",
+        "date": "2026-08-31",
+        "time": "10:00 AM",
+        "type": "physical",
+        "description": "Onsite hardware installation - Morning shift."
+    },
+    {
+        "id": 3,
+        "title": "Afternoon Office Setup",
+        "date": "2026-08-31",
+        "time": "02:00 PM",
+        "type": "physical",
+        "description": "Onsite hardware installation - Afternoon shift."
+    },
+    {
+        "id": 4,
+        "title": "Late Afternoon Review",
+        "date": "2026-08-31",
+        "time": "03:00 PM",
+        "type": "physical",
+        "description": "Final review and wrap-up of hardware installation."
+    },
+    {
+        "id": 1788124960281,
+        "title": "Ibejekwe Joy ",
+        "date": "2026-08-31",
+        "time": "03:00 PM",
+        "type": "virtual",
+        "description": "Meeting with the Director from her Personal PA, JOY"
+    }
+]
