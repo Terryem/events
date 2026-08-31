@@ -2,41 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Director's Schedule</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event & Meeting Calendar</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <dialog id="adminModal">
-    <div class="admin-content">
-        <h2>Schedule Admin Panel</h2>
-        
-        <!-- Form to Add New Meeting -->
-        <form id="addEventForm">
-            <h3>Add New Meeting</h3>
-            <input type="text" id="adminTitle" placeholder="Meeting Title" required>
-            <input type="date" id="adminDate" required>
-            <input type="text" id="adminTime" placeholder="e.g., 10:00 AM" required>
-            <select id="adminType">
-                <option value="virtual">Virtual</option>
-                <option value="physical">Physical</option>
-                <option value="hybrid">Hybrid</option>
-            </select>
-            <textarea id="adminDesc" placeholder="Description"></textarea>
-            <button type="submit">Save Event</button>
-        </form>
-
-        <h3>Manage Existing Events</h3>
-        <ul id="adminEventList"></ul>
-
-        <div class="admin-actions">
-            <button id="exportJsonBtn">Download Updated JSON</button>
-            <button id="closeAdminBtn">Close Admin</button>
-        </div>
-    </div>
-</dialog>
-
     <div class="app-container">
+        <!-- Sidebar -->
         <aside class="sidebar">
             <button id="toggleAdminBtn">Admin Panel</button>
             <h2>Controls</h2>
@@ -55,6 +28,7 @@
             <ul id="upcomingList"></ul>
         </aside>
 
+        <!-- Main Calendar Area -->
         <main class="calendar-main">
             <header class="calendar-header">
                 <div class="nav-buttons">
@@ -71,11 +45,12 @@
                 </div>
             </header>
 
-            <div id="calendarGrid" class="calendar-grid month-view">
-                </div>
+            <div id="calendarGrid" class="calendar-grid month-view"></div>
         </main>
     </div>
 
+
+    <!-- Event Detail Modal -->
     <dialog id="eventModal">
         <div class="modal-content">
             <h3 id="modalTitle"></h3>
@@ -83,6 +58,34 @@
             <p><strong>Type:</strong> <span id="modalType"></span></p>
             <p id="modalDesc"></p>
             <button id="closeModal">Close</button>
+        </div>
+    </dialog>
+
+    <!-- Admin Panel Modal -->
+    <dialog id="adminModal">
+        <div class="admin-content">
+            <h2>Schedule Admin Panel</h2>
+            <form id="addEventForm">
+                <h3>Add New Meeting</h3>
+                <input type="text" id="adminTitle" placeholder="Meeting Title" required>
+                <input type="date" id="adminDate" required>
+                <input type="text" id="adminTime" placeholder="e.g., 10:00 AM" required>
+                <select id="adminType">
+                    <option value="virtual">Virtual</option>
+                    <option value="physical">Physical</option>
+                    <option value="hybrid">Hybrid</option>
+                </select>
+                <textarea id="adminDesc" placeholder="Description"></textarea>
+                <button type="submit">Save Event</button>
+            </form>
+
+            <h3>Manage Existing Events</h3>
+            <ul id="adminEventList"></ul>
+
+            <div class="admin-actions">
+                <button id="exportJsonBtn">Download Updated JSON</button>
+                <button id="closeAdminBtn">Close Admin</button>
+            </div>
         </div>
     </dialog>
 
