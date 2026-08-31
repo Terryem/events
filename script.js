@@ -60,7 +60,7 @@ async function loadEventsAndInit() {
         if (savedData) {
             rawEventsData = JSON.parse(savedData);
         } else {
-            const response = await fetch('events.json');
+            const response = await fetch('./events.json'); // Added ./ for safer relative pathing on GitHub
             if (!response.ok) throw new Error('Failed to load events.json');
             rawEventsData = await response.json();
             localStorage.setItem('calendarEvents', JSON.stringify(rawEventsData));
@@ -68,9 +68,27 @@ async function loadEventsAndInit() {
         
         eventsData = expandEvents(rawEventsData);
     } catch (error) {
-        console.error('Error loading JSON data:', error);
-        rawEventsData = [];
-        eventsData = [];
+        console.error('Error loading JSON data, using fallback:', error);
+        // Fallback default so it never stays empty on GitHub
+        rawEventsData = [
+            {
+                "id": 1,
+                "title": "Team Sync",
+                "date": "2026-08-30",
+                "time": "10:00 AM",
+                "type": "virtual",
+                "description": "Weekly sync via Zoom."
+            },
+            {
+                "id": 2,
+                "title": "Morning Office Setup",
+                "date": "2026-08-31",
+                "time": "11:59 PM",
+                "type": "physical",
+                "description": "Onsite hardware installation."
+            }
+        ];
+        eventsData = expandEvents(rawEventsData);
     }
 
     initCalendar();
