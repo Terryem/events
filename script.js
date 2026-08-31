@@ -1,7 +1,6 @@
-let rawEventsData = []; // Store original fetched data
-let eventsData = [];    // Store processed/expanded calendar events
+let rawEventsData = []; 
+let eventsData = [];    
 
-// Start date set to August 30, 2026
 let currentDate = new Date("2026-08-30T00:00:00");
 let currentView = 'month';
 let countdownInterval = null;
@@ -11,32 +10,18 @@ const monthYearDisplay = document.getElementById('monthYearDisplay');
 const modal = document.getElementById('eventModal');
 const formatFilter = document.getElementById('formatFilter');
 
-// Helper to parse time strings like "10:00 AM" into 24-hr integers (0-23)
-function parseHour(timeStr) {
-    if (!timeStr) return 9;
-    const parts = timeStr.trim().split(' ');
-    if (parts.length < 2) return 9;
-    
-    const timePart = parts[0];
-    const modifier = parts[1].toUpperCase();
-    
-    let [hours] = timePart.split(':').map(Number);
-    
-    if (modifier === 'PM' && hours < 12) hours += 12;
-    if (modifier === 'AM' && hours === 12) hours = 0;
-    return hours;
-}
-
-// Helper to expand simplified/recurring JSON rules into full calendar event objects
 function expandEvents(rawEvents) {
     const expanded = [];
     const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
+    const month = currentDate.getMonth(); 
     const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
 
     rawEvents.forEach(ev => {
         if (ev.date) {
-            expanded.push(ev);
+            const evDateObj = new Date(ev.date + "T00:00:00");
+            if (evDateObj.getFullYear() === year && evDateObj.getMonth() === month) {
+                expanded.push(ev);
+            }
         } else if (ev.day) {
             const formattedMonth = String(month + 1).padStart(2, '0');
             const formattedDay = String(ev.day).padStart(2, '0');
@@ -57,7 +42,7 @@ function expandEvents(rawEvents) {
                         const formattedDay = String(d).padStart(2, '0');
                         expanded.push({
                             ...ev,
-                            id: `${ev.id}-${d}`,
+                            id: `${ev.id || 'rec'}-${d}`,
                             date: `${year}-${formattedMonth}-${formattedDay}`
                         });
                     }
@@ -69,7 +54,6 @@ function expandEvents(rawEvents) {
     return expanded;
 }
 
-// Fetch the external JSON file or LocalStorage data before initializing
 async function loadEventsAndInit() {
     try {
         const savedData = localStorage.getItem('calendarEvents');
@@ -97,9 +81,7 @@ function initCalendar() {
     renderGrid();
     renderUpcoming();
     
-    formatFilter.addEventListener('change', () => {
-        renderGrid();
-    });
+    formatFilter.addEventListener('change', () => renderGrid());
     
     document.getElementById('printBtn').addEventListener('click', () => window.print());
     document.getElementById('closeModal').addEventListener('click', () => modal.close());
@@ -121,6 +103,7 @@ function initCalendar() {
         eventsData = expandEvents(rawEventsData);
         renderHeader();
         renderGrid();
+        renderUpcoming();
     });
 }
 
@@ -132,7 +115,7 @@ function shiftDate(dir) {
     } else {
         currentDate.setDate(currentDate.getDate() + dir);
     }
-    eventsData = expandEvents(rawEventsData); // Re-calculate recurring events for the new month/week
+    eventsData = expandEvents(rawEventsData);
     renderHeader();
     renderGrid();
 }
@@ -164,7 +147,6 @@ function renderGrid() {
         return ev.type === filterValue;
     });
 
-    // 1. MONTH VIEW
     if (currentView === 'month') {
         gridEl.className = "calendar-grid month-view";
         const year = currentDate.getFullYear();
@@ -209,7 +191,6 @@ function renderGrid() {
             gridEl.appendChild(cell);
         }
     } 
-    // 2. WEEK VIEW
     else if (currentView === 'week') {
         gridEl.className = "calendar-grid week-view-slots";
         const curr = new Date(currentDate);
@@ -235,32 +216,22 @@ function renderGrid() {
                 .filter(ev => ev.date === dateStr)
                 .sort((a, b) => new Date(`${a.date} ${a.time}`) - new Date(`${b.date} ${b.time}`));
 
-            if (dayEvents.length === 0) {
-                const emptyMsg = document.createElement('div');
-                emptyMsg.style.padding = "10px";
-                emptyMsg.style.color = "#aaa";
-                emptyMsg.style.fontSize = "0.75rem";
-                emptyMsg.textContent = "No events";
-                slotsWrapper.appendChild(emptyMsg);
-            } else {
-                dayEvents.forEach(ev => {
-                    const slotEvent = document.createElement('div');
-                    slotEvent.className = `event-card ${ev.type}`;
-                    slotEvent.style.marginBottom = "6px";
-                    slotEvent.innerHTML = `<span class="event-time">${ev.time}</span><strong>${ev.title}</strong>`;
-                    slotEvent.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        openModal(ev);
-                    });
-                    slotsWrapper.appendChild(slotEvent);
+            dayEvents.forEach(ev => {
+                const slotEvent = document.createElement('div');
+                slotEvent.className = `event-card ${ev.type}`;
+                slotEvent.style.marginBottom = "4px";
+                slotEvent.innerHTML = `<span class="event-time">${ev.time}</span><strong>${ev.title}</strong>`;
+                slotEvent.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openModal(ev);
                 });
-            }
+                slotsWrapper.appendChild(slotEvent);
+            });
 
             cell.appendChild(slotsWrapper);
             gridEl.appendChild(cell);
         }
     }
-    // 3. DAY VIEW
     else if (currentView === 'day') {
         gridEl.className = "calendar-grid day-view-slots";
         
@@ -271,7 +242,6 @@ function renderGrid() {
 
         const dayWrapper = document.createElement('div');
         dayWrapper.className = "single-day-schedule";
-        
         dayWrapper.innerHTML = `<h3>Schedule for ${currentDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</h3>`;
 
         const dayEvents = filteredEvents
@@ -279,31 +249,16 @@ function renderGrid() {
             .sort((a, b) => new Date(`${a.date} ${a.time}`) - new Date(`${b.date} ${b.time}`));
 
         if (dayEvents.length === 0) {
-            const p = document.createElement('p');
-            p.textContent = "No meetings scheduled for this day.";
-            p.style.color = "#666";
-            dayWrapper.appendChild(p);
+            dayWrapper.innerHTML += `<p style="color:#666; margin-top:10px;">No meetings scheduled for this day.</p>`;
         } else {
             dayEvents.forEach(ev => {
-                const row = document.createElement('div');
-                row.className = "time-row";
-                
-                const label = document.createElement('div');
-                label.className = "time-label";
-                label.textContent = ev.time;
-
-                const slotContent = document.createElement('div');
-                slotContent.className = "time-slot-content";
-
                 const slotEvent = document.createElement('div');
-                slotEvent.className = `event-card ${ev.type} horizontal`;
-                slotEvent.innerHTML = `<span><strong>${ev.title}</strong> - ${ev.description} <em>(${ev.type})</em></span>`;
+                slotEvent.className = `event-card ${ev.type}`;
+                slotEvent.style.margin = "8px 0";
+                slotEvent.style.padding = "10px";
+                slotEvent.innerHTML = `<strong>${ev.time} - ${ev.title}</strong><p>${ev.description}</p>`;
                 slotEvent.addEventListener('click', () => openModal(ev));
-                
-                slotContent.appendChild(slotEvent);
-                row.appendChild(label);
-                row.appendChild(slotContent);
-                dayWrapper.appendChild(row);
+                dayWrapper.appendChild(slotEvent);
             });
         }
 
@@ -313,6 +268,7 @@ function renderGrid() {
 
 function renderUpcoming() {
     const listEl = document.getElementById('upcomingList');
+    if (!listEl) return;
     listEl.innerHTML = '';
 
     const now = new Date();
@@ -322,14 +278,16 @@ function renderUpcoming() {
     });
 
     const futureEvents = parsedEvents
-        .filter(ev => ev.dateTime >= now)
+        .filter(ev => !isNaN(ev.dateTime) && ev.dateTime >= now)
         .sort((a, b) => a.dateTime - b.dateTime);
 
     let countdownContainer = document.getElementById('countdownContainer');
     if (!countdownContainer) {
         countdownContainer = document.createElement('div');
         countdownContainer.id = 'countdownContainer';
-        listEl.parentNode.insertBefore(countdownContainer, listEl);
+        if (listEl.parentNode) {
+            listEl.parentNode.insertBefore(countdownContainer, listEl);
+        }
     }
 
     if (countdownInterval) clearInterval(countdownInterval);
@@ -355,7 +313,7 @@ function renderUpcoming() {
             countdownContainer.innerHTML = `
                 <div class="countdown-box">
                     <h4>Next: ${nextEvent.title}</h4>
-                    <p>${days}d ${hours}h ${minutes}m ${seconds}s remaining</p>
+                    <p>${days}d ${hours}h ${minutes}m ${seconds}s</p>
                 </div>
             `;
         }
@@ -363,18 +321,12 @@ function renderUpcoming() {
         updateTimer();
         countdownInterval = setInterval(updateTimer, 1000);
     } else {
-        countdownContainer.innerHTML = `<p>No upcoming meetings.</p>`;
+        countdownContainer.innerHTML = `<div class="countdown-box"><h4>Next Event</h4><p>No upcoming meetings.</p></div>`;
     }
-
-    const heading = document.createElement('h4');
-    heading.textContent = "Next Future Events";
-    listEl.appendChild(heading);
 
     futureEvents.slice(0, 10).forEach(ev => {
         const li = document.createElement('li');
-        li.innerHTML = `<strong>${ev.date}</strong> - ${ev.title} <em>(${ev.type})</em>`;
-        li.style.marginBottom = "8px";
-        li.style.cursor = "pointer";
+        li.innerHTML = `<strong>${ev.date} (${ev.time})</strong><br>${ev.title}`;
         li.addEventListener('click', () => openModal(ev));
         listEl.appendChild(li);
     });
@@ -388,47 +340,47 @@ function openModal(ev) {
     modal.showModal();
 }
 
-// Admin Panel Logic
+// Admin Panel Controls & Password Protection
 const adminModal = document.getElementById('adminModal');
 const adminToggleBtn = document.getElementById('toggleAdminBtn');
+
 if (adminToggleBtn) {
     adminToggleBtn.addEventListener('click', () => {
-        renderAdminList();
-        adminModal.showModal();
+        const passwordPrompt = prompt("Enter admin password to access panel:");
+        if (passwordPrompt === "@dcc123") {
+            renderAdminList();
+            adminModal.showModal();
+        } else if (passwordPrompt !== null) {
+            alert("Incorrect password! Access denied.");
+        }
     });
 }
 
-const closeAdminBtn = document.getElementById('closeAdminBtn');
-if (closeAdminBtn) {
-    closeAdminBtn.addEventListener('click', () => adminModal.close());
-}
+document.getElementById('closeAdminBtn').addEventListener('click', () => adminModal.close());
 
-const addEventForm = document.getElementById('addEventForm');
-if (addEventForm) {
-    addEventForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const newEvent = {
-            id: Date.now(),
-            title: document.getElementById('adminTitle').value,
-            date: document.getElementById('adminDate').value,
-            time: document.getElementById('adminTime').value,
-            type: document.getElementById('adminType').value,
-            description: document.getElementById('adminDesc').value
-        };
+document.getElementById('addEventForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const newEvent = {
+        id: Date.now(),
+        title: document.getElementById('adminTitle').value,
+        date: document.getElementById('adminDate').value,
+        time: document.getElementById('adminTime').value,
+        type: document.getElementById('adminType').value,
+        description: document.getElementById('adminDesc').value
+    };
 
-        rawEventsData.push(newEvent);
-        localStorage.setItem('calendarEvents', JSON.stringify(rawEventsData));
+    rawEventsData.push(newEvent);
+    localStorage.setItem('calendarEvents', JSON.stringify(rawEventsData));
 
-        eventsData = expandEvents(rawEventsData);
-        renderGrid();
-        renderUpcoming();
-        renderAdminList();
+    eventsData = expandEvents(rawEventsData);
+    renderGrid();
+    renderUpcoming();
+    renderAdminList();
 
-        e.target.reset();
-        alert('Event added successfully!');
-    });
-}
+    e.target.reset();
+    alert('Event added successfully!');
+});
 
 function renderAdminList() {
     const adminListEl = document.getElementById('adminEventList');
@@ -439,12 +391,11 @@ function renderAdminList() {
         const li = document.createElement('li');
         li.style.display = "flex";
         li.style.justifyContent = "space-between";
-        li.style.marginBottom = "6px";
         li.style.alignItems = "center";
         
         li.innerHTML = `
-            <span><strong>${ev.date || 'Day ' + ev.day} (${ev.time})</strong>: ${ev.title}</span>
-            <button onclick="deleteEvent(${index})" style="background:red; color:white; border:none; padding:2px 6px; cursor:pointer;">Delete</button>
+            <span style="font-size: 0.75rem;"><strong>${ev.date || 'Day ' + ev.day} (${ev.time})</strong>: ${ev.title}</span>
+            <button onclick="deleteEvent(${index})" style="background:red; color:white; border:none; padding:2px 6px; border-radius:4px; cursor:pointer;">Delete</button>
         `;
         adminListEl.appendChild(li);
     });
@@ -459,18 +410,14 @@ window.deleteEvent = function(index) {
     renderAdminList();
 };
 
-const exportJsonBtn = document.getElementById('exportJsonBtn');
-if (exportJsonBtn) {
-    exportJsonBtn.addEventListener('click', () => {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(rawEventsData, null, 4));
-        const downloadAnchor = document.createElement('a');
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", "events.json");
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
-    });
-}
+document.getElementById('exportJsonBtn').addEventListener('click', () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(rawEventsData, null, 4));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", "events.json");
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+});
 
-// Start app execution
 loadEventsAndInit();
