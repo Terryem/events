@@ -243,6 +243,20 @@ button.active {
     margin-bottom: 4px;
     opacity: 0.9;
 }
+.ini{
+  height: 60px;
+  width: 60px;
+  object-fit: cover;
+  border-radius: 25px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  background-color: #11ac1b;
+}
+.ini:hover{
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  transform: scale(1.05);
+  height: 70px;
+  width: 70px;
+}
 
 .countdown-box p {
     font-size: 1.1rem;
