@@ -14,5 +14,13 @@
         "time": "12:01 PM",
         "type": "physical",
         "description": "Mission 300 with\n Ministry of Power\n Time: 12pm"
+    },
+        {
+        "id": 1788782600836,
+        "title": "Capacity Development Workshop for the reconstituted TWG for the Food System Transformation Pathways organized by MBEP & FAO",
+        "date": "2026-09-08",
+        "time": "9:00am",
+        "type": "physical",
+        "description": ""
     }
 ]
